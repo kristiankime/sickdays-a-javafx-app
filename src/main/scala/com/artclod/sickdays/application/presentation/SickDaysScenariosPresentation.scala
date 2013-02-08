@@ -1,8 +1,8 @@
 package com.artclod.sickdays.application.presentation
 
-import com.artclod.javafx.indirect.beans.IndirectBean
-import com.artclod.javafx.indirect.beans.UncontrolledIndirectBean
-import com.artclod.javafx.indirect.collections.IndirectObservableListAndSelectionDelegate
+import com.artclod.javafx.swap.beans.BeanSwap
+import com.artclod.javafx.swap.beans.BeanCanSwap
+import com.artclod.javafx.swap.collections.ArrayObservableListAndSelectionSwap
 import com.artclod.javafx.sugar.ObservableSugar.function2BeanGetter
 import com.artclod.javafx.sugar.ObservableSugar.makeEventHandler
 import com.artclod.sickdays.application.model.SickDaysScenariosModel
@@ -10,11 +10,11 @@ import com.artclod.sickdays.application.model.SickDaysScenariosModel
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 
-class SickDaysScenariosPresentation(val sickDaysScenarios: IndirectBean[SickDaysScenariosModel]) {
-	private val scenariosIndirect = sickDaysScenarios.getIndirectList((m: SickDaysScenariosModel) => m.scenarios)
-	val scenarios = new IndirectObservableListAndSelectionDelegate(scenariosIndirect)
+class SickDaysScenariosPresentation(val sickDaysScenarios: BeanSwap[SickDaysScenariosModel]) {
+	private val scenariosIndirect = sickDaysScenarios.getList((m: SickDaysScenariosModel) => m.scenarios)
+	val scenarios = new ArrayObservableListAndSelectionSwap(scenariosIndirect)
 	scenarios.selectionModel().selectFirst()
-	private val selectedScenarioBean = new UncontrolledIndirectBean(scenarios.selectionModel().selectedItemProperty());
+	private val selectedScenarioBean = new BeanCanSwap(scenarios.selectionModel().selectedItemProperty());
 	val selectedScenario = new SickDaysScenarioPresentation(selectedScenarioBean)
 
 	val newScenarios : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.setBean(new SickDaysScenariosModel)
@@ -23,5 +23,5 @@ class SickDaysScenariosPresentation(val sickDaysScenarios: IndirectBean[SickDays
 }
 
 object SickDaysScenariosPresentation {
-	def apply(m: SickDaysScenariosModel) = new SickDaysScenariosPresentation(new IndirectBean(m))
+	def apply(m: SickDaysScenariosModel) = new SickDaysScenariosPresentation(new BeanSwap(m))
 }

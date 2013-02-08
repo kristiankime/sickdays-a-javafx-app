@@ -7,7 +7,7 @@ import scala.math.BigDecimal
 
 import com.artclod.javafx.Releasable
 import com.artclod.javafx.collections.ObservableListMirror
-import com.artclod.javafx.indirect.beans.getter.Getter
+import com.artclod.javafx.swap.beans.getter.Getter
 
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue

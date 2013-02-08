@@ -5,7 +5,7 @@ buildscript {
         ivy {  url = 'http://repository-javafx-gradle-plugin.forge.cloudbees.com/release' }
     }
     dependencies {
-        classpath 'com.bitbucket.shemnon.javafxplugin:plugin:0.0.0'
+        classpath 'org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:0.2.0'
     }
 }
 
@@ -51,7 +51,7 @@ dependencies {
 	compile     group: 'org.apache.commons', name: 'commons-math',          version: '2.2'
 	compile	    group: 'com.miglayout',      name: 'miglayout-javafx',      version: '4.2'
 	compile     group: 'org.scala-lang',     name: 'scala-library',         version: "$scalaVersion"
-	compile     group: '',                   name: 'javafx-artclod',        version: '0.0.0'
+	compile     group: '',                   name: 'javafx-artclod',        version: '0.0.1'
 	compile     group: 'io.spray',           name: "spray-json_$scalaVer",  version: '1.2.3'
 	compile     group: 'org.scalaz',         name: "scalaz-core_$scalaVer", version: '6.0.4'
 	
