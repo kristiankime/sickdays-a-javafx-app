@@ -86,7 +86,7 @@ object SickDaysApplicationMenu {
 			try {
 				val fileText = io.Source.fromFile(file).mkString
 				val model = fileText.asJson.convertTo[SickDaysScenariosModel]
-				presenter.sickDaysScenarios.setBean(model)
+				presenter.sickDaysScenarios.swap(model)
 			} catch {
 				case pe: ParsingException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(pe) //
 					.setMessage("Error loding file was unable to parse (" + file.getAbsolutePath() + ")") //
