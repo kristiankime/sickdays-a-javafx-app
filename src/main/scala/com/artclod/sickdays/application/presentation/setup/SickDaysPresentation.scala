@@ -14,10 +14,10 @@ import com.artclod.javafx.swap.beans.BeanRef
 import com.artclod.javafx.swap.beans.impl.SimpleBeanSwap
 
 class SickDaysPresentation(val sickDays: BeanRef[SickDaysModel]) {
-	val duration = sickDays.getProperty((m: SickDaysModel) => m.duration)
-	val virus = new VirusPresentation(sickDays.getBeanFromProperty((m: SickDaysModel) => m.virus))
+	val duration = sickDays.createPropertyRef((m: SickDaysModel) => m.duration)
+	val virus = new VirusPresentation(sickDays.createBeanRefFromProperty((m: SickDaysModel) => m.virus))
 	val locations = new ObservableListMirror((m: LocationModel) => new LocationPresentation(new SimpleBeanSwap(m), this), //
-			sickDays.getList((m: SickDaysModel) => m.locations))
+			sickDays.createListRef((m: SickDaysModel) => m.locations))
 	
-	val newLocation : EventHandler[ActionEvent] = (e : ActionEvent) => ifExists(sickDays.getBean()){_.newLocation}
+	val newLocation : EventHandler[ActionEvent] = (e : ActionEvent) => ifExists(sickDays.getBean){_.newLocation}
 }

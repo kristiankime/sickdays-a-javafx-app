@@ -6,5 +6,5 @@ import com.artclod.sickdays.application.model.setup.VirusModel
 import com.artclod.javafx.swap.beans.BeanRef
 
 class VirusPresentation(private val virus: BeanRef[VirusModel]) {
-	val virulance = virus.getProperty((m: VirusModel) => m.virulence);
+	val virulance = virus.createPropertyRef((m: VirusModel) => m.virulence);
 }

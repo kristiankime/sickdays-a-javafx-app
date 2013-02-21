@@ -13,15 +13,14 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 
 class SickDaysScenariosPresentation(val sickDaysScenarios: BeanSwap[SickDaysScenariosModel]) {
-	private val scenariosIndirect = sickDaysScenarios.getList((m: SickDaysScenariosModel) => m.scenarios)
-	val scenarios = new ArrayObservableListAndSelectionSwap(scenariosIndirect)
+	val scenarios = new ArrayObservableListAndSelectionSwap(sickDaysScenarios.createListRef((m: SickDaysScenariosModel) => m.scenarios))
 	scenarios.selectionModel().selectFirst()
 	private val selectedScenarioBean = new SimpleBeanRef(scenarios.selectionModel().selectedItemProperty());
 	val selectedScenario = new SickDaysScenarioPresentation(selectedScenarioBean)
 
-	val newScenarios : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.swap(new SickDaysScenariosModel)
-	val add : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.getBean().newScenario
-	val remove : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.getBean().removeScenario(scenarios.selectionModel().getSelectedItem())
+	val newScenarios : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.swapRefObject(new SickDaysScenariosModel)
+	val add : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.getBean.newScenario
+	val remove : EventHandler[ActionEvent] = (a : Any) => sickDaysScenarios.getBean.removeScenario(scenarios.selectionModel().getSelectedItem())
 }
 
 object SickDaysScenariosPresentation {

@@ -11,11 +11,11 @@ import javafx.event.ActionEvent
 import javafx.event.EventHandler
 
 class LocationPresentation(val location: BeanSwap[LocationModel], val sickDays: SickDaysPresentation) extends Releasable {
-	val name = location.getProperty((m: LocationModel) => m.name);
-	val numberEmployees = location.getProperty((m: LocationModel) => m.numberEmployees);
-	val employeeConstitution = location.getProperty((m: LocationModel) => m.employeeConstitution);
+	val name = location.createPropertyRef((m: LocationModel) => m.name);
+	val numberEmployees = location.createPropertyRef((m: LocationModel) => m.numberEmployees);
+	val employeeConstitution = location.createPropertyRef((m: LocationModel) => m.employeeConstitution);
 	
 	def release { location.release() }
 	
-	val removeLocation : EventHandler[ActionEvent] = (e : ActionEvent) => ifExists(sickDays.sickDays.getBean()){_.removeLocation(location.getBean())}
+	val removeLocation : EventHandler[ActionEvent] = (e : ActionEvent) => ifExists(sickDays.sickDays.getBean){_.removeLocation(location.getBean)}
 }

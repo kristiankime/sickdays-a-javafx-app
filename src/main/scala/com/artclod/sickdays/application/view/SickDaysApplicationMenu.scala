@@ -56,7 +56,7 @@ object SickDaysApplicationMenu {
 	}
 
 	private def saveFile(stage: Stage, presenter: SickDaysScenariosPresentation): Unit = {
-		val bean = presenter.sickDaysScenarios.getBean()
+		val bean = presenter.sickDaysScenarios.getBean
 		if (bean == null) {
 			throw new IllegalStateException("scenarios bean was null, system should always have a scenarios bean")
 		}
@@ -86,7 +86,7 @@ object SickDaysApplicationMenu {
 			try {
 				val fileText = io.Source.fromFile(file).mkString
 				val model = fileText.asJson.convertTo[SickDaysScenariosModel]
-				presenter.sickDaysScenarios.swap(model)
+				presenter.sickDaysScenarios.swapRefObject(model)
 			} catch {
 				case pe: ParsingException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(pe) //
 					.setMessage("Error loding file was unable to parse (" + file.getAbsolutePath() + ")") //
