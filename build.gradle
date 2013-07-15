@@ -1,43 +1,15 @@
-// START javafx-plugin INCLUDE
-// http://speling.shemnon.com/blog/2013/01/30/gradle-javafx-plugin-0-dot-2-0-released/
-// http://repository-javafx-gradle-plugin.forge.cloudbees.com/release/0.2.0/javafx.plugin
-buildscript {
-    repositories {
-        mavenLocal()
-        maven {
-            name = 'BinTray' 
-            url = 'http://dl.bintray.com/content/shemnon/javafx-gradle/'
-        }
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'org.bitbucket.shemnon.javafxplugin:gradle-javafx-plugin:0.2.0'
-        classpath project.files("${System.properties['java.home']}/../lib/ant-javafx.jar")
-        classpath project.files("${System.properties['java.home']}/lib/jfxrt.jar")
-        classpath 'org.jclarion:image4j:0.7'
-    }
-}
-
-if (!project.plugins.findPlugin(org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)) {
-    project.apply(plugin: org.bitbucket.shemnon.javafxplugin.JavaFXPlugin)
-}
-// END javafx-plugin INCLUDE
+apply from: 'http://dl.bintray.com/content/shemnon/javafx-gradle/0.2.0/javafx.plugin' // http://speling.shemnon.com/blog/2013/01/30/gradle-javafx-plugin-0-dot-2-0-released/
+apply from: 'gradle/javafx-properties.gradle'
 
 apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'eclipse'
 
-
 group = 'com.artclod'
 version = '0.0.0-SNAPSHOT'
 sourceCompatibility = JavaVersion.VERSION_1_7
 String scalaVer = '2.10'
-String scalaVersion = "$scalaVer" + '.0' // NOTE this version may not match the plugin version it needs to be kept up to date manually
-
-javafx {
-    id = "SickDays"
-    mainClass = 'com.artclod.sickdays.application.LaunchSickDaysApplication'
-}
+String scalaVersion = "$scalaVer" + '.1' // NOTE this version may not match the plugin version it needs to be kept up to date manually
 
 sourceSets {
 	example {
@@ -53,7 +25,7 @@ task sourcesJar(type: Jar, dependsOn:classes) {
 	from sourceSets.main.allSource
 }
 
-artifacts { archives sourcesJar }
+// artifacts { archives sourcesJar } // adding sources confusing the jfxDeploy 
 
 repositories {
 	mavenCentral()
@@ -68,24 +40,12 @@ dependencies {
 	compile     group: '',                   name: 'javafx-artclod',        version: '0.0.1'
 	compile     group: 'io.spray',           name: "spray-json_$scalaVer",  version: '1.2.3'
 	compile     group: 'org.scalaz',         name: "scalaz-core_$scalaVer", version: '6.0.4'
-	
-	scalaTools  group: 'org.scala-lang',     name: 'scala-compiler',        version: "$scalaVersion"
-	scalaTools  group: 'org.scala-lang',     name: 'scala-library',         version: "$scalaVersion"
-                                                                          
+	                                                                          
 	testCompile group: 'junit',              name: 'junit-dep',             version: '4.10'
 	testCompile group: 'org.hamcrest',       name: 'hamcrest-core',         version: '1.2.1'
 	testCompile group: 'org.mockito',        name: 'mockito-core',          version: '1.8.5'
 }
 
-eclipse {
-  classpath {
-    containers "org.scala-ide.sdt.launching.SCALA_CONTAINER"
-    file {
-      whenMerged { classpath ->
-        def scalaLib = classpath.entries.findAll {it.toString().contains("scala-library")}
-        // Avoid problems having two scala-library in the path (the Scala IDE plugin brings one and gradle needs one for non IDE purposes)
-        classpath.entries.removeAll(scalaLib)
-      }
-    }
-  }  
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.6'
 }
