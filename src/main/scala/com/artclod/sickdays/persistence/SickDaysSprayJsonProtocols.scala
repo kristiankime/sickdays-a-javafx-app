@@ -1,7 +1,6 @@
 package com.artclod.sickdays.persistence
 
 import scala.collection.JavaConversions.asScalaBuffer
-
 import com.artclod.javafx.sugar.ObservableSugar.getValue2Option
 import com.artclod.javafx.sugar.ObservableSugar.getValue2Value
 import com.artclod.javafx.sugar.ObservableSugar.getValueNumber2BigDecimal
@@ -9,13 +8,12 @@ import com.artclod.javafx.sugar.ObservableSugar.someOrNull
 import com.artclod.sickdays.application.model.SickDaysScenarioModel
 import com.artclod.sickdays.application.model.SickDaysScenariosModel
 import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeModel
-import com.artclod.sickdays.application.model.setup.LocationModel
+import com.artclod.sickdays.application.model.setup.LocationObs
 import com.artclod.sickdays.application.model.setup.SickDaysModel
 import com.artclod.sickdays.application.model.setup.VirusModel
 import com.artclod.spray.SpraySugar.bigDecimal2Double
 import com.artclod.spray.SpraySugar.bigDecimal2Int
 import com.artclod.spray.SpraySugar.map2JsObject
-
 import spray.json.DefaultJsonProtocol
 import spray.json.DeserializationException
 import spray.json.JsArray
@@ -24,6 +22,7 @@ import spray.json.JsObject
 import spray.json.JsString
 import spray.json.JsValue
 import spray.json.RootJsonFormat
+import com.artclod.sickdays.application.model.setup.LocationData
 
 object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 	private val locationModelFormat = lazyFormat(LocationModelJsonFormat)
@@ -57,7 +56,7 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 	}
 
 	implicit object SickDaysModelJsonFormat extends RootJsonFormat[SickDaysModel] {
-		def write(o: SickDaysModel) = JsObject("duration" -> JsNumber(o.duration), "virus" -> virusModelFormat.write(o.virus), "locations" -> JsArray(List(o.locations.map((m : LocationModel) => locationModelFormat.write(m)): _* )))
+		def write(o: SickDaysModel) = JsObject("duration" -> JsNumber(o.duration), "virus" -> virusModelFormat.write(o.virus), "locations" -> JsArray(List(o.locations.map((m : LocationObs) => locationModelFormat.write(m)): _* )))
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("duration", "virus", "locations") match {
@@ -67,12 +66,12 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 		}
 	}
 
-	implicit object LocationModelJsonFormat extends RootJsonFormat[LocationModel] {
-		def write(v: LocationModel) = JsObject("name" -> JsString(v.name), "numberEmployees" -> JsNumber(v.numberEmployees), "employeeConstitution" -> JsNumber(v.employeeConstitution))
+	implicit object LocationModelJsonFormat extends RootJsonFormat[LocationObs] {
+		def write(v: LocationObs) = JsObject("name" -> JsString(v.name), "numberEmployees" -> JsNumber(v.numberEmployees), "employeeConstitution" -> JsNumber(v.employeeConstitution))
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("name", "numberEmployees", "employeeConstitution") match {
-				case Seq(JsString(name),  JsNumber(numberEmployees), JsNumber(employeeConstitution)) => new LocationModel(nameValue = name, numberValue = numberEmployees, constitutionValue = employeeConstitution)
+				case Seq(JsString(name),  JsNumber(numberEmployees), JsNumber(employeeConstitution)) => new LocationObs(LocationData(name = name, numberEmployees = numberEmployees, employeeConstitution = employeeConstitution))
 				case _ => throw new DeserializationException(LocationModelJsonFormat.this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
