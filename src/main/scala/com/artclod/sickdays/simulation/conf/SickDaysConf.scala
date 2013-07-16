@@ -1,29 +1,16 @@
 package com.artclod.sickdays.simulation.conf
 
+import com.artclod.sickdays.simulation.conf.VirusConf._
 import scalaz.Lens
-import scalaz.LensPlus.arrayLensTypeFix
 
-case class SickDaysConf(randomSeed: Long, duration: Int, locations: Array[LocationConf], virus: VirusConf) {
+case class SickDaysConf(randomSeed: Long, duration: Int, locations: Array[LocationConf], virus: VirusConf)
 
-}
-
+// for help on Lenses see http://www.monadzoo.com/blog/2012/11/18/using-lenses-with-scalaz-7/
 object SickDaysConf {
+	val randomSeedL: Lens[SickDaysConf, Long] = Lens.lensu((o, v) => o.copy(randomSeed = v), _.randomSeed)
+	val durationL: Lens[SickDaysConf, Int] = Lens.lensu((o, v) => o.copy(duration = v), _.duration)
+	val locationsL: Lens[SickDaysConf, Array[LocationConf]] = Lens.lensu((o, v) => o.copy(locations = v), _.locations)
+	val virusL: Lens[SickDaysConf, VirusConf] = Lens.lensu((o, v) => o.copy(virus = v), _.virus)
 
-	val randomSeedLens = Lens[SickDaysConf, Long](_.randomSeed, (obj, field) => obj.copy(randomSeed = field))
-	// The above is the short version of this, which is probably easier to understand and included for clarity:
-	//	val randomSeedLens = Lens(
-	//		get = (_: SickDaysConf).randomSeed, 
-	//		set = (obj: SickDaysConf, field: Long) => obj.copy(randomSeed = field))
-
-	val durationLens = Lens[SickDaysConf, Int](_.duration, (obj, field) => obj.copy(duration = field))
-
-	val locationsLens = Lens[SickDaysConf, Array[LocationConf]]( _.locations, (obj, field) => obj.copy(locations = field))
-
-	def employeeDurabilityLens(index: Int) = locationsLens at index andThen LocationConf.employeeConstitutionLens
-
-	def employeeNumberLens(index: Int) = locationsLens at index andThen LocationConf.numberEmployeesLens
-
-	val virusLens = Lens[SickDaysConf, VirusConf](_.virus, (obj, field) => obj.copy(virus = field))
-	
-	val virusVirulanceLens = virusLens andThen VirusConf.virulenceLens
+	val virusVirulanceL = virusL >=> virulenceL
 }

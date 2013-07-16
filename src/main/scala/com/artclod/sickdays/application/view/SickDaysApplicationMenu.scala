@@ -42,7 +42,7 @@ object SickDaysApplicationMenu {
 	}
 
 	private def newMenuItem(stage: Stage, presenter: SickDaysScenariosPresentation): javafx.scene.control.MenuItem = {
-		new MenuItem("New").w(_.setOnAction((e : Any) => newScenarios(stage, presenter)))
+		new MenuItem("New").w(_.setOnAction((e: Any) => newScenarios(stage, presenter)))
 	}
 
 	private def newScenarios(stage: Stage, presenter: SickDaysScenariosPresentation): Unit = {
@@ -52,7 +52,7 @@ object SickDaysApplicationMenu {
 	}
 
 	private def saveMenuItem(stage: Stage, presenter: SickDaysScenariosPresentation): javafx.scene.control.MenuItem = {
-		new MenuItem("Save").w(_.setOnAction((e : Any) => saveFile(stage, presenter)))
+		new MenuItem("Save").w(_.setOnAction((e: Any) => saveFile(stage, presenter)))
 	}
 
 	private def saveFile(stage: Stage, presenter: SickDaysScenariosPresentation): Unit = {
@@ -69,14 +69,14 @@ object SickDaysApplicationMenu {
 			} catch {
 				case ioe: IOException => new Dialog.Builder().create().setOwner(null).setTitle("Save File Error").setErrorIcon().setStackTrace(ioe) //
 					.setMessage("Error saving file was unable to write to (" + file.getAbsolutePath() + ")") //
-					.addConfirmationButton("Try again", (e : Any) => saveFile(stage, presenter)).addCancelButton(null).build().show()
+					.addConfirmationButton("Try again", (e: Any) => saveFile(stage, presenter)).addCancelButton(null).build().show()
 				case e: Exception => throw e
 			}
 		}
 	}
 
 	private def loadMenuItem(stage: Stage, presenter: SickDaysScenariosPresentation): MenuItem = {
-		new MenuItem("Load").w(_.setOnAction((e : Any) => loadFile(stage, presenter)))
+		new MenuItem("Load").w(_.setOnAction((e: Any) => loadFile(stage, presenter)))
 	}
 
 	private def loadFile(stage: Stage, presenter: SickDaysScenariosPresentation): Unit = {
@@ -90,12 +90,26 @@ object SickDaysApplicationMenu {
 			} catch {
 				case pe: ParsingException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(pe) //
 					.setMessage("Error loding file was unable to parse (" + file.getAbsolutePath() + ")") //
-					.addConfirmationButton("Try again", (e : Any) => loadFile(stage, presenter)).addCancelButton(null).build().show()
+					.addConfirmationButton("Try again", (e: Any) => loadFile(stage, presenter)).addCancelButton(null).build().show()
 				case ioe: IOException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(ioe) //
 					.setMessage("Error loding file was unable to read (" + file.getAbsolutePath() + ")") //
-					.addConfirmationButton("Try again", (e : Any) => loadFile(stage, presenter)).addCancelButton(null).build().show()
+					.addConfirmationButton("Try again", (e: Any) => loadFile(stage, presenter)).addCancelButton(null).build().show()
 				case e: Exception => throw e
 			}
 		}
 	}
+
+	//	JavaFXtras Dialog
+	//	private def loadFailDialog(stage: Stage, presenter: SickDaysScenariosPresentation, text: String) {
+	//		val retry = MonologFXButtonBuilder.create().defaultButton(true).`type`(MonologFXButton.Type.RETRY).build()
+	//		val cancel = MonologFXButtonBuilder.create().defaultButton(true).`type`(MonologFXButton.Type.CANCEL).build()
+	//
+	//		val choice = MonologFXBuilder.create().`type`(MonologFX.Type.ERROR).titleText("Error Loading File").message(text).button(retry).button(cancel).build().showDialog();
+	//		
+	//		choice match {
+	//			case MonologFXButton.Type.RETRY => loadFile(stage, presenter)
+	//			case MonologFXButton.Type.CANCEL => //noop
+	//			case any => throw new IllegalStateException("got type " + any + " this should not be possible")
+	//		}
+	//	}
 }
