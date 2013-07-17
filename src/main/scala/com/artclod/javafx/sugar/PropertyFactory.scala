@@ -1,5 +1,7 @@
 package com.artclod.javafx.sugar
 
+import scala.collection.JavaConversions._
+
 import javafx.beans.property.BooleanProperty
 import javafx.beans.property.DoubleProperty
 import javafx.beans.property.FloatProperty
@@ -14,6 +16,7 @@ import javafx.beans.property.SimpleLongProperty
 import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.beans.property.StringProperty
+import javafx.collections.FXCollections
 
 object PropertyFactory {
 	def prop[T](bean : Any, name : String, t : T) : Property[T] = new SimpleObjectProperty(bean, name, t)
@@ -43,4 +46,6 @@ object PropertyFactory {
 	def prop(t : Float) : FloatProperty = new SimpleFloatProperty(t)
 	
 	def prop(t : String) : StringProperty = new SimpleStringProperty(t)
+	
+	def obs[T](t : Seq[T]) = FXCollections.observableList(seqAsJavaList(t))
 }

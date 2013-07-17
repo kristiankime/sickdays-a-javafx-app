@@ -1,12 +1,12 @@
 package com.artclod.sickdays.application
 
-import com.artclod.sickdays.application.model.SickDaysScenariosModel
+import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.presentation.SickDaysScenariosPresentation
 import com.artclod.sickdays.application.view.SickDaysApplicationView
-
 import javafx.application.Application
 import javafx.scene.Scene
 import javafx.stage.Stage
+import com.artclod.sickdays.application.model.SickDaysScenariosData
 
 class LaunchSickDaysApplication extends Application {
 
@@ -19,7 +19,7 @@ class LaunchSickDaysApplication extends Application {
 		
 	private def createApplication(stage: Stage) = {
 		// Model
-		val sickDaysScenariosModel = new SickDaysScenariosModel
+		val sickDaysScenariosModel = SickDaysScenariosData().toObs
 		sickDaysScenariosModel.newScenario
 
 		// Presentation

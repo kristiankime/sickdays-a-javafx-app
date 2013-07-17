@@ -8,7 +8,7 @@ import com.artclod.javafx.dialog.Dialog
 import com.artclod.javafx.sugar.ObservableSugar.bean2Fluent
 import com.artclod.javafx.sugar.ObservableSugar.makeEventHandler
 import com.artclod.javafx.sugar.ObservableSugar.writeToFile
-import com.artclod.sickdays.application.model.SickDaysScenariosModel
+import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.presentation.SickDaysScenariosPresentation
 import com.artclod.sickdays.persistence.SickDaysSprayJsonProtocols.SickDaysScenariosModelJsonFormat
 
@@ -85,7 +85,7 @@ object SickDaysApplicationMenu {
 		if (file != null) {
 			try {
 				val fileText = io.Source.fromFile(file).mkString
-				val model = fileText.asJson.convertTo[SickDaysScenariosModel]
+				val model = fileText.asJson.convertTo[SickDaysScenariosObs]
 				presenter.sickDaysScenarios.swapRefObject(model)
 			} catch {
 				case pe: ParsingException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(pe) //

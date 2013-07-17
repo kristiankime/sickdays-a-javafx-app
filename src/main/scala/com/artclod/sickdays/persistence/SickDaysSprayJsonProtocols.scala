@@ -5,12 +5,12 @@ import com.artclod.javafx.sugar.ObservableSugar.getValue2Option
 import com.artclod.javafx.sugar.ObservableSugar.getValue2Value
 import com.artclod.javafx.sugar.ObservableSugar.getValueNumber2BigDecimal
 import com.artclod.javafx.sugar.ObservableSugar.someOrNull
-import com.artclod.sickdays.application.model.SickDaysScenarioModel
-import com.artclod.sickdays.application.model.SickDaysScenariosModel
+import com.artclod.sickdays.application.model.SickDaysScenarioObs
+import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeModel
 import com.artclod.sickdays.application.model.setup.LocationObs
-import com.artclod.sickdays.application.model.setup.SickDaysModel
-import com.artclod.sickdays.application.model.setup.VirusModel
+import com.artclod.sickdays.application.model.setup.SickDaysObs
+import com.artclod.sickdays.application.model.setup.VirusObs
 import com.artclod.spray.SpraySugar.bigDecimal2Double
 import com.artclod.spray.SpraySugar.bigDecimal2Int
 import com.artclod.spray.SpraySugar.map2JsObject
@@ -23,6 +23,11 @@ import spray.json.JsString
 import spray.json.JsValue
 import spray.json.RootJsonFormat
 import com.artclod.sickdays.application.model.setup.LocationData
+import com.artclod.sickdays.application.model.setup.SickDaysData
+import com.artclod.sickdays.application.model.setup.SickDaysData
+import com.artclod.sickdays.application.model.setup.VirusData
+import com.artclod.sickdays.application.model.SickDaysScenarioData
+import com.artclod.sickdays.application.model.SickDaysScenariosData
 
 object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 	private val locationModelFormat = lazyFormat(LocationModelJsonFormat)
@@ -31,36 +36,36 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 	private val sickDaysOutcomeModelFormat = lazyFormat(SickDaysOutcomeModelJsonFormat)
 	private val sickDaysScenarioModelFormat = lazyFormat(SickDaysScenarioModelJsonFormat)
 
-	implicit object SickDaysScenariosModelJsonFormat extends RootJsonFormat[SickDaysScenariosModel] {
-		def write(v: SickDaysScenariosModel) = {
-			JsObject("scenarios" -> JsArray(List(v.scenarios.map((m: SickDaysScenarioModel) => sickDaysScenarioModelFormat.write(m)): _*)))
+	implicit object SickDaysScenariosModelJsonFormat extends RootJsonFormat[SickDaysScenariosObs] {
+		def write(v: SickDaysScenariosObs) = {
+			JsObject("scenarios" -> JsArray(List(v.scenarios.map((m: SickDaysScenarioObs) => sickDaysScenarioModelFormat.write(m)): _*)))
 		}
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("scenarios") match {
-				case Seq(JsArray(scenarios)) => new SickDaysScenariosModel(initialScenarios = scenarios.map(sickDaysScenarioModelFormat.read(_)).iterator.toIterable)
+				case Seq(JsArray(scenarios)) => SickDaysScenariosData( scenarios.map(sickDaysScenarioModelFormat.read(_).toData).iterator.toIterable ).toObs
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
 	}
 
-	implicit object SickDaysScenarioModelJsonFormat extends RootJsonFormat[SickDaysScenarioModel] {
-		def write(o: SickDaysScenarioModel) = JsObject("name" -> JsString(o.name), "setup" -> sickDaysModelFormat.write(o.setup), "outcome" -> sickDaysOutcomeModelFormat.write(o.outcome))
+	implicit object SickDaysScenarioModelJsonFormat extends RootJsonFormat[SickDaysScenarioObs] {
+		def write(o: SickDaysScenarioObs) = JsObject("name" -> JsString(o.name), "setup" -> sickDaysModelFormat.write(o.setup), "outcome" -> sickDaysOutcomeModelFormat.write(o.outcome))
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("name", "setup", "outcome") match {
-				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => new SickDaysScenarioModel(nameValue = name, setupValue = sickDaysModelFormat.read(setup), outcomeValue = someOrNull(sickDaysOutcomeModelFormat.read(outcome)))
+				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => SickDaysScenarioData(name, sickDaysModelFormat.read(setup).toData, someOrNull(sickDaysOutcomeModelFormat.read(outcome))).toObs
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
 	}
 
-	implicit object SickDaysModelJsonFormat extends RootJsonFormat[SickDaysModel] {
-		def write(o: SickDaysModel) = JsObject("duration" -> JsNumber(o.duration), "virus" -> virusModelFormat.write(o.virus), "locations" -> JsArray(List(o.locations.map((m : LocationObs) => locationModelFormat.write(m)): _* )))
+	implicit object SickDaysModelJsonFormat extends RootJsonFormat[SickDaysObs] {
+		def write(o: SickDaysObs) = JsObject("duration" -> JsNumber(o.duration), "virus" -> virusModelFormat.write(o.virus), "locations" -> JsArray(List(o.locations.map((m : LocationObs) => locationModelFormat.write(m)): _* )))
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("duration", "virus", "locations") match {
-				case Seq(JsNumber(duration), JsObject(virus), JsArray(locations)) => new SickDaysModel(durationValue = duration, virusValue = virusModelFormat.read(virus), locationsValue = locations.map(locationModelFormat.read(_)) : _* )
+				case Seq(JsNumber(duration), JsObject(virus), JsArray(locations)) => SickDaysData(duration, virusModelFormat.read(virus).toData, locations.map(locationModelFormat.read(_)).map(_.toData) : _* ).toObs
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
@@ -77,12 +82,12 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 		}
 	}
 
-	implicit object VirusModelJsonFormat extends RootJsonFormat[VirusModel] {
-		def write(v: VirusModel) = JsObject("virulence" -> JsNumber(v.virulence))
+	implicit object VirusModelJsonFormat extends RootJsonFormat[VirusObs] {
+		def write(v: VirusObs) = JsObject("virulence" -> JsNumber(v.virulence))
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("virulence") match {
-				case Seq(JsNumber(virulence)) => new VirusModel(virulenceValue = virulence)
+				case Seq(JsNumber(virulence)) => VirusData(virulence).toObs
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
