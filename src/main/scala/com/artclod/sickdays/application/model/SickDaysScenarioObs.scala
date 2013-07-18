@@ -1,7 +1,7 @@
 package com.artclod.sickdays.application.model
 
 import com.artclod.javafx.sugar.PropertyFactory.prop
-import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeModel
+import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeObs
 import com.artclod.sickdays.application.model.setup.SickDaysObs
 import com.artclod.sickdays.runner.SickDaysScenarioRunner
 import com.artclod.sickdays.runner.translation.SickDaysModel2SickDaysConfs
@@ -41,6 +41,6 @@ class SickDaysScenarioObs(data: SickDaysScenarioData) {
 
 }
 
-case class SickDaysScenarioData(name: String = "sick days", setup: SickDaysData, outcome: SickDaysOutcomeModel = null) {
+case class SickDaysScenarioData(name: String = "sick days", setup: SickDaysData, outcome: SickDaysOutcomeObs = null) {
 	def toObs = new SickDaysScenarioObs(this)
 }

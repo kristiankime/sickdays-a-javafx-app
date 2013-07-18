@@ -7,7 +7,7 @@ import com.artclod.javafx.sugar.ObservableSugar.getValueNumber2BigDecimal
 import com.artclod.javafx.sugar.ObservableSugar.someOrNull
 import com.artclod.sickdays.application.model.SickDaysScenarioObs
 import com.artclod.sickdays.application.model.SickDaysScenariosObs
-import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeModel
+import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeObs
 import com.artclod.sickdays.application.model.setup.LocationObs
 import com.artclod.sickdays.application.model.setup.SickDaysObs
 import com.artclod.sickdays.application.model.setup.VirusObs
@@ -28,6 +28,7 @@ import com.artclod.sickdays.application.model.setup.SickDaysData
 import com.artclod.sickdays.application.model.setup.VirusData
 import com.artclod.sickdays.application.model.SickDaysScenarioData
 import com.artclod.sickdays.application.model.SickDaysScenariosData
+import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeData
 
 object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 	private val locationModelFormat = lazyFormat(LocationModelJsonFormat)
@@ -93,15 +94,15 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 		}
 	}
 
-	implicit object SickDaysOutcomeModelJsonFormat extends RootJsonFormat[Option[SickDaysOutcomeModel]] {
-		def write(o: Option[SickDaysOutcomeModel]) = o match {
+	implicit object SickDaysOutcomeModelJsonFormat extends RootJsonFormat[Option[SickDaysOutcomeObs]] {
+		def write(o: Option[SickDaysOutcomeObs]) = o match {
 			case Some(v) => JsObject("daysSickMean" -> JsNumber(v.daysSickMean), "daysSickVariance" -> JsNumber(v.daysSickVariance), "daysWorkingMean" -> JsNumber(v.daysWorkingMean), "daysWorkingVariance" -> JsNumber(v.daysWorkingVariance))
 			case None => JsObject()
 		}
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("daysSickMean", "daysSickVariance", "daysWorkingMean", "daysWorkingVariance") match {
-				case Seq(JsNumber(daysSickMean), JsNumber(daysSickVariance), JsNumber(daysWorkingMean), JsNumber(daysWorkingVariance)) => Option(new SickDaysOutcomeModel(sickMean = daysSickMean, sickVariance = daysSickVariance, workingMean = daysWorkingMean, workingVariance = daysWorkingVariance))
+				case Seq(JsNumber(daysSickMean), JsNumber(daysSickVariance), JsNumber(daysWorkingMean), JsNumber(daysWorkingVariance)) => Option(SickDaysOutcomeData(daysSickMean, daysSickVariance, daysWorkingMean, daysWorkingVariance).toObs)
 				case Seq() => None
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}

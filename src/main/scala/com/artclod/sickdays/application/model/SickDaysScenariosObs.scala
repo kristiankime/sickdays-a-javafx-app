@@ -2,7 +2,6 @@ package com.artclod.sickdays.application.model
 
 import scala.collection.JavaConversions._
 import scala.collection.Iterable
-import scala.collection.JavaConversions.asJavaCollection
 import scala.collection.immutable.HashSet
 import com.artclod.javafx.collections.BeanObservableList
 import com.artclod.javafx.sugar.ObservableSugar.function2BeanGetter
