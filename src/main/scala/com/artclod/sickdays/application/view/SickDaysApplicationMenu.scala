@@ -12,13 +12,16 @@ import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.presentation.SickDaysScenariosPresentation
 import com.artclod.sickdays.persistence.SickDaysSprayJsonProtocols.SickDaysScenariosModelJsonFormat
 
+import spray.json._
+import DefaultJsonProtocol._ // !!! IMPORTANT, else `convertTo` and `toJson` won't work
+
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import javafx.stage.FileChooser
 import javafx.stage.Stage
-import spray.json.pimpAny
-import spray.json.pimpString
+//import spray.json.pimpAny
+//import spray.json.pimpString
 
 // LATER is this useful / why doesn't it work?
 //				val d = new File(getClass().getResource(".").getFile())
@@ -65,6 +68,7 @@ object SickDaysApplicationMenu {
 		val file = fileChooser.showSaveDialog(stage)
 		if (file != null) {
 			try {
+//				bean.toData.toJson
 				writeToFile(file, bean.toJson.prettyPrint)
 			} catch {
 				case ioe: IOException => new Dialog.Builder().create().setOwner(null).setTitle("Save File Error").setErrorIcon().setStackTrace(ioe) //

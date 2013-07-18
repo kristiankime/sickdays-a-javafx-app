@@ -19,8 +19,8 @@ import com.artclod.sickdays.application.model.SickDaysScenariosData
 object SickDaysSprayJsonProtocolsTest {
 	def main(args: Array[String]) {
 	  val vM = SickDaysScenariosData(ArrayBuffer(
-	  		SickDaysScenarioData("one", SickDaysData(10, VirusData(10), LocationData("L1"), LocationData("L2")), null), 
-	  		SickDaysScenarioData("two", SickDaysData(10, VirusData(10), LocationData()), null)
+	  		SickDaysScenarioData("one", SickDaysData(10, VirusData(10), Seq(LocationData("L1"), LocationData("L2"))), null), 
+	  		SickDaysScenarioData("two", SickDaysData(10, VirusData(10), Seq(LocationData())), null)
 	  		)).toObs
 	  val vMAST = vM.toJson
 	  System.err.println(vMAST)

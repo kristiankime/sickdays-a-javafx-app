@@ -13,9 +13,9 @@ class SickDaysObs(data: SickDaysData) {
 	def newLocation = locations.add(LocationData().toObs)
 	def removeLocation(l: LocationObs) = { locations.remove(l) }
 
-	def toData = new SickDaysData(duration.getValue, virus.getValue.toData, locations.toSeq.map(_.toData): _*)
+	def toData = new SickDaysData(duration.getValue, virus.getValue.toData, locations.toSeq.map(_.toData))
 }
 
-case class SickDaysData(duration: Int, virus: VirusData, locations: LocationData*) {
+case class SickDaysData(duration: Int, virus: VirusData, locations: Seq[LocationData] = Seq()) {
 	def toObs = new SickDaysObs(this)
 }

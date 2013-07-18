@@ -55,7 +55,7 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("name", "setup", "outcome") match {
-				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => SickDaysScenarioData(name, sickDaysModelFormat.read(setup).toData, someOrNull(sickDaysOutcomeModelFormat.read(outcome))).toObs
+				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => SickDaysScenarioData(name, sickDaysModelFormat.read(setup).toData, someOrNull( sickDaysOutcomeModelFormat.read(outcome).map(_.toData) )).toObs 
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
@@ -66,7 +66,7 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("duration", "virus", "locations") match {
-				case Seq(JsNumber(duration), JsObject(virus), JsArray(locations)) => SickDaysData(duration, virusModelFormat.read(virus).toData, locations.map(locationModelFormat.read(_)).map(_.toData) : _* ).toObs
+				case Seq(JsNumber(duration), JsObject(virus), JsArray(locations)) => SickDaysData(duration, virusModelFormat.read(virus).toData, locations.map(locationModelFormat.read(_)).map(_.toData)).toObs
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}
