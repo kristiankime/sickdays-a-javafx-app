@@ -20,7 +20,7 @@ class LaunchSickDaysApplication extends Application {
 	private def createApplication(stage: Stage) = {
 		// Model
 		val sickDaysScenariosModel = SickDaysScenariosData().toObs
-//		sickDaysScenariosModel.newScenario
+		sickDaysScenariosModel.newScenario
 
 		// Presentation
 		val sickDaysScenariosPresentation = SickDaysScenariosPresentation(sickDaysScenariosModel)
