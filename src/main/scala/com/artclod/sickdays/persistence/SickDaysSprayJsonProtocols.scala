@@ -4,7 +4,6 @@ import scala.collection.JavaConversions.asScalaBuffer
 import com.artclod.javafx.sugar.ObservableSugar.getValue2Option
 import com.artclod.javafx.sugar.ObservableSugar.getValue2Value
 import com.artclod.javafx.sugar.ObservableSugar.getValueNumber2BigDecimal
-import com.artclod.javafx.sugar.ObservableSugar.someOrNull
 import com.artclod.sickdays.application.model.SickDaysScenarioObs
 import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeObs
@@ -55,7 +54,7 @@ object SickDaysSprayJsonProtocols extends DefaultJsonProtocol {
 
 		def read(value: JsValue) = {
 			value.asJsObject.getFields("name", "setup", "outcome") match {
-				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => SickDaysScenarioData(name, sickDaysModelFormat.read(setup).toData, someOrNull( sickDaysOutcomeModelFormat.read(outcome).map(_.toData) )).toObs 
+				case Seq(JsString(name), JsObject(setup), JsObject(outcome)) => SickDaysScenarioData(name, sickDaysModelFormat.read(setup).toData, sickDaysOutcomeModelFormat.read(outcome).map(_.toData)).toObs 
 				case _ => throw new DeserializationException(this.getClass().getSimpleName() + " was unable to parse " + value.prettyPrint)
 			}
 		}

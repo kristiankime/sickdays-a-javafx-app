@@ -1,25 +1,22 @@
 package com.artclod.sickdays.application.view
 
 import java.io.IOException
-
 import org.parboiled.errors.ParsingException
-
 import com.artclod.javafx.dialog.Dialog
 import com.artclod.javafx.sugar.ObservableSugar.bean2Fluent
 import com.artclod.javafx.sugar.ObservableSugar.makeEventHandler
 import com.artclod.javafx.sugar.ObservableSugar.writeToFile
 import com.artclod.sickdays.application.model.SickDaysScenariosObs
 import com.artclod.sickdays.application.presentation.SickDaysScenariosPresentation
-import com.artclod.sickdays.persistence.SickDaysSprayJsonProtocols.SickDaysScenariosModelJsonFormat
-
+import com.artclod.sickdays.persistence.SickDaysDataSprayJasonProtocols._
 import spray.json._
-import DefaultJsonProtocol._ // !!! IMPORTANT, else `convertTo` and `toJson` won't work
-
+import DefaultJsonProtocol._
 import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import javafx.stage.FileChooser
 import javafx.stage.Stage
+import com.artclod.sickdays.application.model.SickDaysScenariosData
 //import spray.json.pimpAny
 //import spray.json.pimpString
 
@@ -60,22 +57,21 @@ object SickDaysApplicationMenu {
 
 	private def saveFile(stage: Stage, presenter: SickDaysScenariosPresentation): Unit = {
 		val bean = presenter.sickDaysScenarios.getBean
-		if (bean == null) {
-			throw new IllegalStateException("scenarios bean was null, system should always have a scenarios bean")
-		}
-
-		val fileChooser = new FileChooser()
-		val file = fileChooser.showSaveDialog(stage)
-		if (file != null) {
-			try {
-//				bean.toData.toJson
-				writeToFile(file, bean.toJson.prettyPrint)
-			} catch {
-				case ioe: IOException => new Dialog.Builder().create().setOwner(null).setTitle("Save File Error").setErrorIcon().setStackTrace(ioe) //
-					.setMessage("Error saving file was unable to write to (" + file.getAbsolutePath() + ")") //
-					.addConfirmationButton("Try again", (e: Any) => saveFile(stage, presenter)).addCancelButton(null).build().show()
-				case e: Exception => throw e
+		if (bean != null) {
+			val fileChooser = new FileChooser()
+			val file = fileChooser.showSaveDialog(stage)
+			if (file != null) {
+				try {
+					writeToFile(file, bean.toData.toJson.prettyPrint)
+				} catch {
+					case ioe: IOException => new Dialog.Builder().create().setOwner(null).setTitle("Save File Error").setErrorIcon().setStackTrace(ioe) //
+						.setMessage("Error saving file was unable to write to (" + file.getAbsolutePath() + ")") //
+						.addConfirmationButton("Try again", (e: Any) => saveFile(stage, presenter)).addCancelButton(null).build().show()
+					case e: Exception => throw e
+				}
 			}
+		} else {
+			new Dialog.Builder().create().setOwner(null).setTitle("No Scenario to Save").setErrorIcon().setMessage("There was nothing to save.").addOkButton().build().show()
 		}
 	}
 
@@ -89,7 +85,7 @@ object SickDaysApplicationMenu {
 		if (file != null) {
 			try {
 				val fileText = io.Source.fromFile(file).mkString
-				val model = fileText.asJson.convertTo[SickDaysScenariosObs]
+				val model = fileText.asJson.convertTo[SickDaysScenariosData].toObs
 				presenter.sickDaysScenarios.swapRefObject(model)
 			} catch {
 				case pe: ParsingException => new Dialog.Builder().create().setOwner(null).setTitle("Load File Error").setErrorIcon().setStackTrace(pe) //

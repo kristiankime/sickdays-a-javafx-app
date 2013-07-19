@@ -2,7 +2,7 @@ package com.artclod.sickdays.application.model.setup
 
 import com.artclod.javafx.sugar.PropertyFactory.prop
 
-class LocationObs(data: LocationData = new LocationData) {
+class LocationObs(data: LocationData) {
 	val name = prop(data.name)
 	val numberEmployees = prop(data.numberEmployees)
 	val employeeConstitution = prop(data.employeeConstitution)

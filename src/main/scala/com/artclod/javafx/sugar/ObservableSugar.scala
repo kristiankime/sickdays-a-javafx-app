@@ -19,11 +19,6 @@ object ObservableSugar {
 
 	def writeToFile(file: File, data: String) = using(new FileWriter(file)) { fileWriter => fileWriter.write(data) }
 
-	def someOrNull[T](t: Option[T]): T = t match {
-		case Some(v) => v
-		case None => null.asInstanceOf[T]
-	}
-
 	def ifExists[T, R](t: T)(f: T => R): Option[R] = { if (t != null && t != None) { Some(f(t)) } else { None } }
 
 	def ifExistsElse[T, R](t: T)(f: T => R)(r: R): R = { if (t != null && t != None) { f(t) } else { r } }

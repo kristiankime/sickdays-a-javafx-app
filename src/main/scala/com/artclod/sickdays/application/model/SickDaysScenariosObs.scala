@@ -13,15 +13,15 @@ import com.artclod.sickdays.application.model.setup.VirusData
 import com.artclod.sickdays.application.model.setup.VirusData
 import com.artclod.sickdays.application.model.setup.LocationData
 
-class SickDaysScenariosObs(data : SickDaysScenariosData) {
-	val scenarios = BeanObservableList.create(data.initialScenarios.map(_.toObs), (m:SickDaysScenarioObs) => m.name);
-	
-	def newScenario() = scenarios.add( SickDaysScenarioData(setup = SickDaysData(10, VirusData(), Seq(LocationData())) ).toObs )
-	def removeScenario(m :SickDaysScenarioObs) = scenarios.remove(m)
+class SickDaysScenariosObs(data: SickDaysScenariosData) {
+	val scenarios = BeanObservableList.create(data.initialScenarios.map(_.toObs), (m: SickDaysScenarioObs) => m.name);
+
+	def newScenario() = scenarios.add(SickDaysScenarioData("Sick Days", SickDaysData(10, VirusData())).toObs)
+	def removeScenario(m: SickDaysScenarioObs) = scenarios.remove(m)
 
 	def toData = SickDaysScenariosData(scenarios.toSeq.map(_.toData))
 }
 
-case class SickDaysScenariosData(initialScenarios : Iterable[SickDaysScenarioData] = new HashSet) {
+case class SickDaysScenariosData(initialScenarios: Iterable[SickDaysScenarioData] = new HashSet) {
 	def toObs = new SickDaysScenariosObs(this)
 }

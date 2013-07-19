@@ -14,7 +14,8 @@ import com.artclod.sickdays.application.model.outcome.SickDaysOutcomeData
 class SickDaysScenarioObs(data: SickDaysScenarioData) {
 	val name = prop(data.name)
 	val setup = prop(data.setup.toObs)
-	val outcome = prop(data.outcome.toObs)
+	val outcome = prop(data.outcome.map(_.toObs).getOrElse(null))
+		
 
 	// LATER these are lazy for persistence only (Services can only be made on the JavaFX Application thread), is there a better way to do this?
 	lazy private val scenarioRunnerService = new ScenarioRunnerService()
@@ -25,7 +26,7 @@ class SickDaysScenarioObs(data: SickDaysScenarioData) {
 
 	override def toString = name.getValue()
 
-	def toData = SickDaysScenarioData(name.getValue, setup.getValue.toData, outcome.getValue.toData)
+	def toData = SickDaysScenarioData(name.getValue, setup.getValue.toData, Option(outcome.getValue.toData))
 
 	private class ScenarioRunnerService() extends Service[Unit] {
 		override def createTask = {
@@ -42,6 +43,6 @@ class SickDaysScenarioObs(data: SickDaysScenarioData) {
 
 }
 
-case class SickDaysScenarioData(name: String = "sick days", setup: SickDaysData, outcome: SickDaysOutcomeData = null) {
+case class SickDaysScenarioData(name: String, setup: SickDaysData, outcome: Option[SickDaysOutcomeData] = None) {
 	def toObs = new SickDaysScenarioObs(this)
 }

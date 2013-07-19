@@ -22,13 +22,4 @@ class SickDaysView(presenter: SickDaysPresentation) {
 	surface.add(new Label("Locations"), "span 2")
 	surface.add(new Button("New").w(_.setOnAction(presenter.newLocation)), "span 2")
 	surface.add(new ScrollPane().w(_.setContent(locations.surface)) , "grow, span 2")
-	
-//	private val employeePane = new TitledPane("Locatons", locations.surface)
-//	private val virusPane = new TitledPane("Virus", virus.surface)
-//	private val accordian = new Accordion().setV(employeePane, virusPane){ _.getPanes().addAll(_:_*) }
-//	
-//	val surface = new MigPane("fill, wrap 2")
-//	surface.add(new Label("Duration"))
-//	surface.add(duration)
-//	surface.add(accordian, "grow, span 2")
 }
